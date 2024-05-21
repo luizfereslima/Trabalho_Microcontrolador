@@ -1,25 +1,25 @@
-### Documentação de Projeto
+# Documentação de Projeto
 
-#### Sistema de Controle de Acesso com LCD, Teclado e Servo Motor
+## Sistema de Controle de Acesso com LCD, Teclado e Servo Motor
 
 ---
 
-#### 1. **Descrição do Projeto**
+### 1. **Descrição do Projeto**
 Este projeto implementa um sistema de controle de acesso utilizando um display LCD, um teclado matricial e um servo motor. O sistema permite que um usuário digite uma senha usando o teclado, e se a senha estiver correta, o servo motor se move para abrir uma porta. Se a senha estiver incorreta, uma mensagem de erro é exibida no LCD.
 
-#### 2. **Componentes Utilizados**
+### 2. **Componentes Utilizados**
 - **Arduino Uno**
 - **Display LCD I2C 16x2** (LiquidCrystal_I2C)
 - **Teclado Matricial 4x4** (Keypad)
 - **Servo Motor** (Servo)
 - **Fios Jumper e Protoboard**
 
-#### 3. **Bibliotecas Utilizadas**
+### 3. **Bibliotecas Utilizadas**
 - **LiquidCrystal_I2C**: Para controle do display LCD via interface I2C.
 - **Keypad**: Para leitura do teclado matricial.
 - **Servo**: Para controle do servo motor.
 
-#### 4. **Conexões**
+### 4. **Conexões**
 - **Display LCD I2C**:
   - Conectado ao barramento I2C (SDA, SCL) do Arduino.
 - **Teclado Matricial**:
@@ -29,9 +29,9 @@ Este projeto implementa um sistema de controle de acesso utilizando um display L
   - Sinal conectado ao pino analógico A0 do Arduino.
   - Alimentação conectada aos pinos 5V e GND do Arduino.
 
-#### 5. **Código-Fonte**
+### 5. **Código-Fonte**
 
-##### 5.1. **Inclusão de Bibliotecas e Definição de Variáveis**
+#### 5.1. **Inclusão de Bibliotecas e Definição de Variáveis**
 ```cpp
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
@@ -61,7 +61,7 @@ Servo servoMotor;
 Keypad teclado = Keypad(makeKeymap(teclasTeclado), pinosLinhaTeclado, pinosColunaTeclado, linhaTeclado, colunaTeclado);
 ```
 
-##### 5.2. **Função Setup**
+#### 5.2. **Função Setup**
 ```cpp
 void setup() {
     telaLCD.init();
@@ -72,7 +72,7 @@ void setup() {
 }
 ```
 
-##### 5.3. **Função Loop**
+#### 5.3. **Função Loop**
 ```cpp
 void loop() {
     char teclaDigitada = teclado.getKey();
@@ -108,7 +108,7 @@ void loop() {
 }
 ```
 
-##### 5.4. **Função Auxiliar para Tela Inicial**
+#### 5.4. **Função Auxiliar para Tela Inicial**
 ```cpp
 void inicial() {
     telaLCD.clear();
@@ -120,7 +120,7 @@ void inicial() {
 }
 ```
 
-##### 5.5. **Verificação de Senha**
+#### 5.5. **Verificação de Senha**
 ```cpp
 bool senhaCorreta() {
     return (senhaDigitada[0] == senha[0] && senhaDigitada[1] == senha[1] &&
@@ -129,7 +129,7 @@ bool senhaCorreta() {
 }
 ```
 
-##### 5.6. **Limpeza da Senha Digitada**
+#### 5.6. **Limpeza da Senha Digitada**
 ```cpp
 void limparSenhaDigitada() {
     for (int posicaoDigitada = contadorTeclado; posicaoDigitada >= 0; posicaoDigitada--) {
@@ -138,7 +138,7 @@ void limparSenhaDigitada() {
 }
 ```
 
-#### 6. **Funcionamento**
+### 6. **Funcionamento**
 1. **Inicialização**:
    - O LCD é inicializado e a tela de boas-vindas é exibida.
    - O servo motor é configurado para a posição inicial (0 graus).
@@ -151,15 +151,5 @@ void limparSenhaDigitada() {
 4. **Reinicialização**:
    - Após 3 segundos, o sistema é reinicializado, voltando à tela de boas-vindas.
 
-#### 7. **Observações**
-- **Segurança**: A senha é armazenada em um array de caracteres, o que pode ser melhorado utilizando técnicas de criptografia para aumentar a segurança.
-- **Flexibilidade**: O código permite fácil alteração da senha e dos pinos utilizados, facilitando adaptações para diferentes projetos.
-
-#### 8. **Possíveis Melhorias**
-- Implementação de um sistema de logs para monitorar tentativas de acesso.
-- Adicionar um buzzer para sinalizar tentativas incorretas de senha.
-- Utilizar um RTC (Relógio de Tempo Real) para registrar data e hora das tentativas de acesso.
-
----
-
-Essa documentação fornece uma visão geral do projeto, detalhando o funcionamento e os componentes utilizados, além de apresentar o código-fonte comentado para melhor entendimento.
+### 7. **Link do Projeto**
+Você pode acessar o projeto no Tinkercad através do seguinte link: [Controle de Acesso](https://www.tinkercad.com/things/5p0LftADbbh-controle-de-acesso)
