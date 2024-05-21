@@ -1,6 +1,6 @@
 # Documentação de Projeto
 
-## Sistema de Controle de Acesso com LCD, Teclado e Servo Motor
+## Sistema de Controle de Acesso (fechadura eletronica)
 
 ---
 
