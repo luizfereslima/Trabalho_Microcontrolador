@@ -1,6 +1,6 @@
 # Documentação de Projeto
 
-## Sistema de Controle de Acesso (fechadura eletronica)
+## Sistema de Controle de Acesso (fechadura eletrônica)
 
 ---
 
@@ -144,7 +144,7 @@ void limparSenhaDigitada() {
    - Se a senha estiver correta, o servo motor se move para 90 graus, liberando a porta e uma mensagem de "Porta Liberada!" é exibida no LCD.
    - Se a senha estiver incorreta, uma mensagem de "Senha Incorreta!" é exibida no LCD.
 4. **Reinicialização**:
-   - Após 3 segundos, o sistema é reinicializado, voltando à tela de boas-vindas.
+   - Após 3 segundos, o sistema é reinicializado, trancando a porta e voltando à tela de boas-vindas.
 
 ### 6. **Link do Projeto**
 Você pode acessar o projeto no Tinkercad através do seguinte link: [Controle de Acesso](https://www.tinkercad.com/things/5p0LftADbbh-controle-de-acesso)
