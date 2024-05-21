@@ -1,20 +1,18 @@
-# Documentação de Projeto
-
-## Sistema de Controle de Acesso (fechadura eletrônica)
+# Documentação de Projeto: Sistema de Controle de Acesso (fechadura eletrônica)
 
 ---
 
-### 1. **Descrição do Projeto**
+## 1. **Descrição do Projeto**
 Este projeto implementa um sistema de controle de acesso utilizando um display LCD, um teclado matricial e um servo motor. O sistema permite que um usuário digite uma senha usando o teclado, e se a senha estiver correta, o servo motor se move para abrir uma porta. Se a senha estiver incorreta, uma mensagem de erro é exibida no LCD.
 
-### 2. **Componentes Utilizados**
+## 2. **Componentes Utilizados**
 - **Arduino Uno**
 - **Display LCD I2C 16x2** (LiquidCrystal_I2C), baseado em PCF8574
 - **Teclado Matricial 4x4** (Keypad)
 - **Servo Motor** (Servo)
 - **Fios Jumper**
 
-### 3. **Conexões**
+## 3. **Conexões**
 - **Display LCD I2C**:
   - Conectado ao barramento I2C (SDA, SCL) do Arduino.
 - **Teclado Matricial**:
@@ -24,9 +22,9 @@ Este projeto implementa um sistema de controle de acesso utilizando um display L
   - Sinal conectado ao pino analógico A0 do Arduino.
   - Alimentação conectada aos pinos 5V e GND do Arduino.
 
-### 4. **Código-Fonte**
+## 4. **Código-Fonte**
 
-#### 4.1. **Inclusão de Bibliotecas e Definição de Variáveis**
+### 4.1. **Inclusão de Bibliotecas e Definição de Variáveis**
 ```cpp
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
@@ -56,7 +54,7 @@ Servo servoMotor;
 Keypad teclado = Keypad(makeKeymap(teclasTeclado), pinosLinhaTeclado, pinosColunaTeclado, linhaTeclado, colunaTeclado);
 ```
 
-#### 4.2. **Função Setup**
+### 4.2. **Função Setup**
 ```cpp
 void setup() {
     telaLCD.init();
@@ -67,7 +65,7 @@ void setup() {
 }
 ```
 
-#### 4.3. **Função Loop**
+### 4.3. **Função Loop**
 ```cpp
 void loop() {
     char teclaDigitada = teclado.getKey();
@@ -103,7 +101,7 @@ void loop() {
 }
 ```
 
-#### 4.4. **Função Auxiliar para Tela Inicial**
+### 4.4. **Função Auxiliar para Tela Inicial**
 ```cpp
 void inicial() {
     telaLCD.clear();
@@ -115,7 +113,7 @@ void inicial() {
 }
 ```
 
-#### 4.5. **Verificação de Senha**
+### 4.5. **Verificação de Senha**
 ```cpp
 bool senhaCorreta() {
     return (senhaDigitada[0] == senha[0] && senhaDigitada[1] == senha[1] &&
@@ -124,7 +122,7 @@ bool senhaCorreta() {
 }
 ```
 
-#### 4.6. **Limpeza da Senha Digitada**
+### 4.6. **Limpeza da Senha Digitada**
 ```cpp
 void limparSenhaDigitada() {
     for (int posicaoDigitada = contadorTeclado; posicaoDigitada >= 0; posicaoDigitada--) {
@@ -133,7 +131,7 @@ void limparSenhaDigitada() {
 }
 ```
 
-### 5. **Funcionamento**
+## 5. **Funcionamento**
 1. **Inicialização**:
    - O LCD é inicializado e a tela de boas-vindas é exibida.
    - O servo motor é configurado para a posição inicial (0 graus).
@@ -146,5 +144,5 @@ void limparSenhaDigitada() {
 4. **Reinicialização**:
    - Após 3 segundos, o sistema é reinicializado, trancando a porta e voltando à tela de boas-vindas.
 
-### 6. **Link do Projeto**
+## 6. **Link do Projeto**
 Você pode acessar o projeto no Tinkercad através do seguinte link: [Controle de Acesso](https://www.tinkercad.com/things/5p0LftADbbh-controle-de-acesso)
