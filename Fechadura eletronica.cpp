@@ -2,151 +2,173 @@
 #include <Keypad.h>
 #include <Servo.h>
 
-LiquidCrystal_I2C lcd(0x20, 16, 2); // Parametros LCD I2C
+/*
+ * Definição de variáveis e objetos:
+ * - lcd: objeto do LCD com endereço I2C 0x20, 16 colunas e 2 linhas
+ * - numLinhasTeclado e numColunasTeclado: dimensões do teclado matricial
+ * - senhaCorreta: senha inicial correta
+ * - entradaUsuario: vetor para armazenar a senha digitada pelo usuário
+ * - contadorEntradas: contador para rastrear o número de teclas pressionadas
+ * - pinosLinhasTeclado e pinosColunasTeclado: mapeamento dos pinos do teclado
+ * - senhaAdm: senha de administrador
+ * - teclasTeclado: mapeamento das teclas do teclado
+ * - servoMotor: objeto servo motor
+ * - teclado: objeto teclado com o mapeamento das teclas e pinos definidos
+ */
+LiquidCrystal_I2C lcd(0x20, 16, 2);
+const byte numLinhasTeclado = 4;
+const byte numColunasTeclado = 4;
+char senhaCorreta[5] = "1234";
+char entradaUsuario[5];
+byte contadorEntradas = 0;
 
-const byte numLinhasTeclado = 4; // Definicao linhas teclado
-const byte numColunasTeclado = 4; // Definicao colunas teclado
-char senhaUsuario[5]; // Vetor base para senha
-byte contadorDeTeclas = 0;
+byte pinosLinhasTeclado[numLinhasTeclado] = {6, 7, 8, 9};
+byte pinosColunasTeclado[numColunasTeclado] = {10, 11, 12, 13};
+char senhaAdm[] = "0800";
 
-byte pinosLinhasTeclado[numLinhasTeclado] = {6, 7, 8, 9}; // Definicao dos pinos das linhas
-byte pinosColunasTeclado[numColunasTeclado] = {10, 11, 12, 13}; // Definicao dos pinos das colunas
-char senhaCorreta[] = "1234";
-
-char teclasTeclado[numLinhasTeclado][numColunasTeclado] = { // Criacao matriz (teclas)
+char teclasTeclado[numLinhasTeclado][numColunasTeclado] = { 
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
     {'7', '8', '9', 'C'},
     {'*', '0', '#', 'D'}
 };
 
-Servo servoMotor; // Definicao do servo motor
+Servo servoMotor;
 Keypad teclado = Keypad(makeKeymap(teclasTeclado), pinosLinhasTeclado, pinosColunasTeclado, numLinhasTeclado, numColunasTeclado);
 
-/*  
-Criação do objeto 'teclado' do tipo 'Keypad'
-Este objeto será usado para ler as teclas pressionadas no teclado matricial
-
-makeKeymap(teclasTeclado): Cria um mapeamento das teclas do teclado matricial
-- teclasTeclado: Matriz contendo as teclas organizadas em linhas e colunas
-
-pinosLinhasTeclado: Array com os pinos conectados às linhas do teclado matricial
-pinosColunasTeclado: Array com os pinos conectados às colunas do teclado matricial
-numLinhasTeclado: Número de linhas do teclado matricial
-numColunasTeclado: Número de colunas do teclado matricial 
-*/
-
 void setup() {
-    lcd.init(); // Inicializa o LCD
-    lcd.backlight(); // Liga o backlight do LCD
-    inicial(); // Configuração inicial do LCD
-    servoMotor.attach(A0, 544, 2400);
-
     /*
-    Attach do servo motor ao pino A0 do Arduino
-    - A0: Pino ao qual o servo motor está conectado
-    - 544: Valor mínimo do pulso de controle para a posição 0 grau
-    - 2400: Valor máximo do pulso de controle para a posição 180 graus
-    */
-
-    servoMotor.write(0); // Define a posição inicial do servo (0 graus)
+     * Função setup:
+     * - Inicializa o LCD e liga o backlight
+     * - Configura a tela inicial do LCD
+     * - Conecta o servo motor ao pino A0 e define os pulsos mínimos e máximos
+     * - Define a posição inicial do servo motor para 0 graus
+     */
+    lcd.init();
+    lcd.backlight();
+    inicial();
+    servoMotor.attach(A0, 544, 2400);
+    servoMotor.write(0);
 }
 
 void loop() {
-    char teclaDigitada = teclado.getKey(); // Leitura do teclado
-    if ((teclaDigitada != 0) && (contadorDeTeclas <= 5)) { // Verifica se uma tecla foi pressionada e se o contador não ultrapassou 5
-        senhaUsuario[contadorDeTeclas] = teclaDigitada; // Armazena a tecla pressionada na senha digitada
-        // Verifica se é a primeira tecla digitada
-        if (contadorDeTeclas == 0) {
-            // Se for a primeira tecla, define a posição do cursor no LCD e exibe a tecla pressionada
-            lcd.setCursor((contadorDeTeclas + 6), 1);
+    /*
+     * Função loop:
+     * - Lê as teclas pressionadas no teclado
+     * - Armazena as teclas pressionadas no vetor entradaUsuario
+     * - Exibe as teclas pressionadas no LCD
+     * - Verifica se 4 teclas foram pressionadas e compara a senha digitada com as senhas corretas
+     * - Toma ações apropriadas (abrir a porta, entrar no modo admin, exibir erro)
+     * - Limpa a senha digitada e retorna para a tela inicial do LCD
+     */
+    char teclaDigitada = teclado.getKey();
+    
+    // Verifica se uma tecla foi pressionada e se o contador de entradas é menor que 4
+    if ((teclaDigitada != 0) && (contadorEntradas < 4)) {
+        entradaUsuario[contadorEntradas] = teclaDigitada;
 
-            /*
-            Define a posição do cursor no LCD para exibir a tecla pressionada 
-            - (contadorDeTeclas + 6): Calcula a coluna onde o caractere será exibido no LCD
-            - contadorDeTeclas: Posição atual da tecla digitada
-            - 6: Adiciona um deslocamento para a direita para a exibição da senha
-            - 1: Define a linha onde o caractere será exibido (linha inferior do LCD)
-            */
-
-            lcd.print(senhaUsuario[contadorDeTeclas]); // Exibe a tecla pressionada
+        // Exibe a tecla pressionada ou um asterisco
+        if (contadorEntradas == 0) { // Verifica se é a primeira tecla digitada
+            lcd.setCursor((contadorEntradas + 6), 1);
+            lcd.print(entradaUsuario[contadorEntradas]);
         } else {
-            // Se não for a primeira tecla, exibe um asterisco no lugar da tecla pressionada e move o cursor para a próxima posição
-            lcd.setCursor((contadorDeTeclas + 5), 1);
-
-            /*
-            Define a posição do cursor no LCD para exibir um asterisco no lugar da tecla pressionada
-            - (contadorDeTeclas + 5): Calcula a coluna onde o asterisco será exibido no LCD
-            - contadorDeTeclas: Posição atual da tecla digitada
-            - 5: Adiciona um deslocamento para a direita para a exibição do asterisco
-            - 1: Define a linha onde o asterisco será exibido (linha inferior do LCD)
-            */
-
-            lcd.print('*'); // Exibe um asterisco no lugar da tecla pressionada
-            lcd.setCursor((contadorDeTeclas + 6), 1);
-
-            /*
-            Define a posição do cursor no LCD para exibir a tecla pressionada 
-            - (contadorDeTeclas + 6): Calcula a coluna onde o caractere será exibido no LCD
-            - contadorDeTeclas: Posição atual da tecla digitada
-            - 6: Adiciona um deslocamento para a direita para a exibição da senha
-            - 1: Define a linha onde o caractere será exibido (linha inferior do LCD)
-            */
-
-            lcd.print(senhaUsuario[contadorDeTeclas]); // Exibe a tecla pressionada
+            lcd.setCursor((contadorEntradas + 5), 1);
+            lcd.print('*'); // Exibe um asterisco no lugar das teclas anteriores para mascarar a senha
+            lcd.setCursor((contadorEntradas + 6), 1);
+            lcd.print(entradaUsuario[contadorEntradas]); // Exibe a tecla digitada
         }
-        contadorDeTeclas++; // Incrementa o contador de teclas digitadas
-        if ((senhaUsuario[0] == senhaCorreta[0]) && (senhaUsuario[1] == senhaCorreta[1]) && (senhaUsuario[2] == senhaCorreta[2]) && (senhaUsuario[3] == senhaCorreta[3]) && (senhaUsuario[4] == senhaCorreta[4])) {
+        contadorEntradas++;
 
-            /*
-            Verifica se a senha digitada é igual à senha definida
-            - senhaUsuario[i]: representa a i-ésima tecla digitada pelo usuário
-            - senhaCorreta[i]: representa o i-ésimo dígito da senha definida
-            - (senhaUsuario[0] == senhaCorreta[0]): verifica se o primeiro dígito da senha digitada é igual ao primeiro dígito da senha definida
-            - (senhaUsuario[1] == senhaCorreta[1]): verifica se o segundo dígito da senha digitada é igual ao segundo dígito da senha definida
-            - (senhaUsuario[2] == senhaCorreta[2]): verifica se o terceiro dígito da senha digitada é igual ao terceiro dígito da senha definida
-            - (senhaUsuario[3] == senhaCorreta[3]): verifica se o quarto dígito da senha digitada é igual ao quarto dígito da senha definida
-            - (senhaUsuario[4] == senhaCorreta[4]): verifica se o quinto dígito da senha digitada é igual ao quinto dígito da senha definida
-            */
-
-            lcd.setCursor(0, 1); // Define a posição do cursor no LCD
-            lcd.print("Porta Liberada!"); // Exibe mensagem de porta liberada
-            servoMotor.write(90); // Move o servo para a posição de porta aberta (90 graus)
-            for (int posicaoDigitada = contadorDeTeclas; posicaoDigitada >= 0; posicaoDigitada--) { // Limpa o vetor senhaUsuario
-                senhaUsuario[posicaoDigitada] = {};
-
-                /*
-                Limpa o vetor senhaUsuario
-                - for (int posicaoDigitada = contadorDeTeclas; posicaoDigitada >= 0; posicaoDigitada--): loop que percorre o vetor senhaUsuario a partir da última posição digitada até a primeira
-                - posicaoDigitada: variável de controle do loop, indica a posição atual no vetor senhaUsuario
-                - contadorDeTeclas: quantidade de dígitos digitados na senha
-                - posicaoDigitada >= 0: condição de parada do loop, garante que todas as posições do vetor serão percorridas
-                - posicaoDigitada--: decrementa a posição atual para acessar a próxima posição do vetor
-                - senhaUsuario[posicaoDigitada] = {}: atribui um valor vazio à posição atual do vetor senhaUsuario, limpando-a
-                */
-
+        // Verifica se foram digitadas 4 teclas
+        if (contadorEntradas == 4) {
+            entradaUsuario[4] = '\0'; // Adiciona o caractere de fim de string
+            
+            // Verifica se a senha digitada é a senha de administrador
+            if (strcmp(entradaUsuario, senhaAdm) == 0) {
+                lcd.setCursor(0, 1);
+                lcd.print("Modo admin");
+                delay(2000);
+                alterarSenha();
+            
+            // Verifica se a senha digitada é a senha correta
+            } else if (strcmp(entradaUsuario, senhaCorreta) == 0) {
+                lcd.setCursor(0, 1);
+                lcd.print("Porta Liberada!");
+                servoMotor.write(90); // Abre a porta (servo a 90 graus)
+                delay(3000);
+                servoMotor.write(0); // Fecha a porta após 3 segundos
+            
+            // Caso a senha esteja incorreta
+            } else {
+                lcd.setCursor(0, 1);
+                lcd.print("Senha Incorreta!");
+                delay(3000);
             }
-            delay(3000); // Aguarda 3 segundos
-            contadorDeTeclas = 0; // Reseta o contador de teclas digitadas
-            inicial(); // Retorna para a tela inicial do LCD
-        } else if (contadorDeTeclas == 5) { // Se o usuário digitou a senha incorretamente
-            for (int posicaoDigitada = contadorDeTeclas; posicaoDigitada >= 0; posicaoDigitada--) { // Limpa o vetor senhaUsuario
-                senhaUsuario[posicaoDigitada] = {};
-            }
-            lcd.setCursor(0, 1); // Define a posição do cursor no LCD
-            lcd.print("Senha Incorreta!"); // Exibe mensagem de senha incorreta
-            delay(3000);
-            contadorDeTeclas = 0; // Reseta o contador de teclas digitadas
-            inicial(); // Retorna para a tela inicial do LCD
+            limparSenha();
+            inicial();
         }
     }
 }
 
-void inicial() { // Func auxiliar para configurar a tela inicial do LCD
-    lcd.clear(); // Limpa o LCD
-    lcd.setCursor(0, 0); // Define a posição do cursor no LCD
-    lcd.print("    Sala CPD "); // Exibe mensagem de boas-vindas
-    lcd.setCursor(0, 1); // Define a posição do cursor no LCD
-    lcd.print("Senha: "); // Exibe mensagem para digitar a senha
-    servoMotor.write(0); // Fecha a porta (0 graus)
+void inicial() {
+    /*
+     * Função auxiliar para configurar a tela inicial do LCD:
+     * - Limpa o LCD
+     * - Exibe uma mensagem de boas-vindas
+     * - Exibe um prompt para digitar a senha
+     */
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("    Sala CPD ");
+    lcd.setCursor(0, 1);
+    lcd.print("Senha: ");
+}
+
+void limparSenha() {
+    /*
+     * Função para limpar a senha digitada:
+     * - Limpa o vetor entradaUsuario
+     * - Reseta o contador de entradas
+     */
+    for (int i = 0; i < 5; i++) {
+        entradaUsuario[i] = '\0';
+    }
+    contadorEntradas = 0;
+}
+
+void alterarSenha() {
+    /*
+     * Função para alterar a senha:
+     * - Limpa o LCD e exibe uma mensagem para digitar a nova senha
+     * - Lê a nova senha digitada
+     * - Armazena a nova senha em senhaCorreta
+     * - Exibe uma mensagem de confirmação
+     */
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Nova Senha: ");
+    delay(1000);
+
+    char novaSenhaUsuario[5];
+    byte contadorNovaSenha = 0;
+
+    while (contadorNovaSenha < 4) {
+        char teclaNovaSenha = teclado.getKey();
+        
+        // Verifica se uma tecla foi pressionada
+        if (teclaNovaSenha) {
+            novaSenhaUsuario[contadorNovaSenha] = teclaNovaSenha;
+            lcd.setCursor((contadorNovaSenha + 6), 1);
+            lcd.print(teclaNovaSenha);
+            contadorNovaSenha++;
+        }
+    }
+
+    novaSenhaUsuario[4] = '\0';
+    strcpy(senhaCorreta, novaSenhaUsuario);
+
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Senha Alterada!");
+    delay(2000);
 }
