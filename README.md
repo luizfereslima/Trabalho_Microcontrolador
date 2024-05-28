@@ -97,14 +97,7 @@ Este projeto consiste na implementação de um sistema de controle de acesso uti
    ```
    Esta função é executada continuamente após a inicialização. Aqui, estamos lendo as teclas pressionadas no teclado, armazenando as teclas pressionadas, exibindo as teclas no LCD, verificando se a senha foi inserida corretamente e tomando ações apropriadas com base nisso.
 
-### 5.5. **Funções auxiliares**:
-   - `inicial()`: Configura a tela inicial do LCD, exibindo uma mensagem de boas-vindas e um prompt para digitar a senha.
-   - `limparSenha()`: Limpa a senha digitada pelo usuário, resetando o vetor de entrada e o contador de entradas.
-   - `alterarSenha()`: Permite ao usuário alterar a senha, solicitando uma nova senha e armazenando-a na variável `senhaCorreta`.
-
-Claro, vou explicar mais detalhadamente cada uma das funções auxiliares:
-
-### 5.6. **Função `inicial()`**:
+### 5.5. **Função `inicial()`**:
    ```cpp
    void inicial() {
        lcd.clear();
@@ -121,7 +114,7 @@ Claro, vou explicar mais detalhadamente cada uma das funções auxiliares:
    - Define o cursor na posição (0, 1), que é a segunda linha e a primeira coluna do display.
    - Exibe a mensagem "Senha: " no display, indicando ao usuário que ele deve digitar a senha.
 
-### 5.7. **Função `limparSenha()`**:
+### 5.6. **Função `limparSenha()`**:
    ```cpp
    void limparSenha() {
        for (int i = 0; i < 5; i++) {
@@ -135,7 +128,7 @@ Claro, vou explicar mais detalhadamente cada uma das funções auxiliares:
    - Atribui o valor `'\0'` (caractere nulo) a cada posição do vetor, limpando assim a senha digitada anteriormente.
    - Reseta o contador de entradas, garantindo que a próxima senha digitada comece a ser armazenada a partir da primeira posição do vetor.
 
-### 5.8. **Função `alterarSenha()`**:
+### 5.7. **Função `alterarSenha()`**:
    ```cpp
    void alterarSenha() {
        lcd.clear();
