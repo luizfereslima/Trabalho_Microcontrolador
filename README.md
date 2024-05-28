@@ -83,13 +83,8 @@ Este projeto consiste na implementação de um sistema de controle de acesso uti
    ```cpp
    void loop() {
        char teclaDigitada = teclado.getKey();
-       // Verifica se uma tecla foi pressionada e se o contador de entradas é menor que 4
        if ((teclaDigitada != 0) && (contadorEntradas < 4)) {
            entradaUsuario[contadorEntradas] = teclaDigitada;
-           // Exibe a tecla pressionada ou um asterisco
-           // Verifica se foram digitadas 4 teclas
-           // Verifica se a senha digitada é a senha de administrador ou a senha correta
-           // Caso a senha esteja incorreta
            limparSenha();
            inicial();
        }
