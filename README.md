@@ -148,4 +148,4 @@ void limparSenhaDigitada() {
    - Após 3 segundos, o sistema é reinicializado, trancando a porta e voltando à tela de boas-vindas.
 
 ## 7. **Link do Projeto**
-Você pode acessar o projeto no Tinkercad através do seguinte link: [Controle de Acesso](https://www.tinkercad.com/things/5p0LftADbbh-controle-de-acesso)
+Você pode acessar o projeto no Tinkercad através do seguinte link: [Controle de Acesso](https://www.tinkercad.com/things/5p0LftADbbh-controle-de-acesso?sharecode=Zne6GsbvCWq07ZepZkBs2ZFqW8uRnuzLJblT1U_3nac)
