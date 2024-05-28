@@ -21,7 +21,7 @@ Este projeto consiste na implementação de um sistema de controle de acesso uti
   - Alimentação conectada aos pinos 5V e GND do Arduino.
 
 ## 4. Diagrama
-![image](https://github.com/luizfereslima/Trabalho_Microcontrolador/assets/75223914/a27ac526-0601-4fc4-b52a-38a94f84ec38)
+![image](https://github.com/luizfereslima/Trabalho_Microcontrolador/assets/75223914/3cab67c6-6c19-430c-b527-9b50f1dec171)
 
 ## 5. Código Fonte
 ### 5.1. **Inclusão de bibliotecas**:
