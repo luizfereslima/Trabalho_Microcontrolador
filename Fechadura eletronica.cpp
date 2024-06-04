@@ -67,15 +67,32 @@ void loop() {
     if ((teclaDigitada != 0) && (contadorEntradas < 4)) {
         entradaUsuario[contadorEntradas] = teclaDigitada;
 
-        // Exibe a tecla pressionada ou um asterisco
-        if (contadorEntradas == 0) { // Verifica se é a primeira tecla digitada
+        if (contadorEntradas == 0) {
+            /*
+            Verifica se a tecla pressionada é a primeira digitada. 
+            A variável contadorEntradas é usada para contar quantas teclas foram pressionadas até o momento.
+            */
+
             lcd.setCursor((contadorEntradas + 6), 1);
             lcd.print(entradaUsuario[contadorEntradas]);
+            /*
+            Se for a primeira tecla (contadorEntradas == 0), o cursor do LCD é posicionado na coluna 6 da segunda linha ((contadorEntradas + 6), 1). 
+            O valor 6 parece ser uma posição de base escolhida para exibir a senha. 
+            Em seguida, a tecla pressionada (entradaUsuario[contadorEntradas]) é exibida no LCD.
+            */
+
         } else {
             lcd.setCursor((contadorEntradas + 5), 1);
-            lcd.print('*'); // Exibe um asterisco no lugar das teclas anteriores para mascarar a senha
+            lcd.print('*');
             lcd.setCursor((contadorEntradas + 6), 1);
-            lcd.print(entradaUsuario[contadorEntradas]); // Exibe a tecla digitada
+            lcd.print(entradaUsuario[contadorEntradas]);
+            /*
+            Se não for a primeira tecla (contadorEntradas > 0), o código faz o seguinte:
+
+            Posiciona o cursor uma coluna à esquerda da posição atual (contadorEntradas + 5, 1) e exibe um asterisco ('*'). 
+            Isso é feito para mascarar a tecla anterior, transformando-a em um asterisco.
+            Move o cursor para a próxima posição (contadorEntradas + 6, 1) e exibe a tecla pressionada (entradaUsuario[contadorEntradas]).
+            */
         }
         contadorEntradas++;
 
@@ -118,8 +135,8 @@ void inicial() {
      * - Exibe um prompt para digitar a senha
      */
     lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("    Sala CPD ");
+    lcd.setCursor(4, 0);
+    lcd.print("Sala CPD");
     lcd.setCursor(0, 1);
     lcd.print("Senha: ");
 }
@@ -152,20 +169,33 @@ void alterarSenha() {
     char novaSenhaUsuario[5];
     byte contadorNovaSenha = 0;
 
-    while (contadorNovaSenha < 4) {
-        char teclaNovaSenha = teclado.getKey();
+    while (contadorNovaSenha < 4) { //Inicia um loop que continuará até que 4 teclas sejam pressionadas.
+        char teclaNovaSenha = teclado.getKey(); //Lê a tecla pressionada no teclado e armazena em teclaNovaSenha.
         
-        // Verifica se uma tecla foi pressionada
-        if (teclaNovaSenha) {
-            novaSenhaUsuario[contadorNovaSenha] = teclaNovaSenha;
+        if (teclaNovaSenha) { //Verifica se uma tecla foi pressionada (se teclaNovaSenha não é nula).
+            novaSenhaUsuario[contadorNovaSenha] = teclaNovaSenha; //Armazena a tecla pressionada na posição atual do array novaSenhaUsuario.
             lcd.setCursor((contadorNovaSenha + 6), 1);
-            lcd.print(teclaNovaSenha);
-            contadorNovaSenha++;
+            /*
+            Posiciona o cursor na coluna contadorNovaSenha + 6 da segunda linha do LCD.
+            Esse cálculo (contadorNovaSenha + 6) é usado para deixar um espaço após a mensagem inicial "Nova Senha: ". 
+            */
+
+            lcd.print(teclaNovaSenha); //Exibe a tecla pressionada no LCD.
+            contadorNovaSenha++; //Incrementa o contador, rastreando o número de teclas pressionadas.
         }
     }
 
     novaSenhaUsuario[4] = '\0';
-    strcpy(senhaCorreta, novaSenhaUsuario);
+    /*
+    Adiciona o caractere nulo ('\0') no final do array novaSenhaUsuario para marcar o fim da string. 
+    Isso garante que a string seja manipulada corretamente por funções que trabalham com strings.
+    */
+
+    strcpy(senhaCorreta, novaSenhaUsuario); 
+    /*
+    Usei a função strcpy para copiar a nova senha armazenada em novaSenhaUsuario para a variável senhaCorreta. 
+    strcpy (stringcopy) é uma função da biblioteca padrão do C que copia o conteúdo de uma string de origem para uma string de destino.
+    */
 
     lcd.clear();
     lcd.setCursor(0, 0);
